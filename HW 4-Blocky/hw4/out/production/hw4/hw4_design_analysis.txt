@@ -1,0 +1,140 @@
+/**********************************************************************
+ *  HW4 - Blocky
+ *  PROGRAM ANALYSIS
+ *
+ *  For each method below:
+ *    - List the data structure(s) you used. Provide a brief justification
+ *    - Provide its big-O. Provide a brief justification 
+ *  Only answer for 5 methods                                                 
+ **********************************************************************/
+
+* random_init (1 pt):
+
+Data Structure: N/A
+
+
+Algorithm:
+
+    We first build the blocks of depth 0 and depth 1(total of 5 blocks) manually so that we can easily use the random() function to choose a block from the board.
+
+    We initialize the upperBound for random() to be 4, and use "rand.nextInt(upperBound)+1" to pick a random id of the block from {1, 2, 3, 4}.
+
+    We then do the while loop until the random chosen block is already at the max depth. During the while loop, we check for the children of this random chosen block: if this block already has children, randomly choose another block and continue; if this block has no children, smash this block and add 4 to the upperBound, then randomly choose another block with new upperBound.
+
+
+Runtime Analysis:
+
+Since each time we randomly choose one block from the board, and it is possible that it takes many time until we finally choose the block with the max_depth. Because of randomness, the runtime complexity cannot be decided.
+
+
+**********************************************************************
+* getBlock (1 pt):
+
+Data Structure: queue
+
+
+Algorithm:
+
+    We use a queue to do the BFS and initialize a counter to record the id of the current block. 
+
+    We first push the root block(block with depth 0) into queue, and do the while loop until there is no element in the queue (i.e. finish the BFS). Each time we pop one block from the top of the queue, and increase the counter by 1. If the popped block has children, we push these children into the queue. We stop the iteration when counter is equal to the target pos, which means we have found the block with the target id.
+
+
+Runtime Analysis:
+
+From the algorithm analysis above, we can see that there are 2 conditions to terminate the while loop: reach the target id, or there is no element in the queue(i.e. we have iterated through all the blocks). Since target id is less than or equal to the number of blocks in the board, the runtime complexity of this algorithm is O(pos).
+
+
+**********************************************************************
+* swap (1 pt):
+
+Data Structure: N/A
+
+
+Algorithm:
+
+    We first switch the position of these two blocks using moveXY() function in the Block class (move() function needs 2 arguments: dx and dy). 
+
+    Then we switch the position(tl, tr, bl or br) in each block's parent. For block1, we use indexOf() to find the index of this block in its parent's children list, thus find the position, and we use setter to set the corresponding child block to be block2; same with block2.
+
+    Finally we switch the parents of these two blocks using setParent().
+
+
+Runtime Analysis:
+
+The first step needs to call moveXY() function in the Block class, which is a recursive function, and we need to recursively call this function until reach the leaf node, thus the runtime complexity is O(max_depth). The second step needs to iterate through the children lists, and the length of children list is constant(4), thus the runtime is O(1). The third step is O(1). Thus the overall runtime complexity is O(max_depth).
+
+
+**********************************************************************
+* smash (1 pt):
+
+Data Structure: N/A
+
+
+Algorithm:
+
+    If the block is not at top level, and the depth hasn't arrived max_depth, and it currently has no children, we can smash this block.
+
+    We first calculate the midpoint, and use this midpoint to calculate the topLeft and botRight of each sub-block. Then we assign random colors to each sub-block.
+
+
+Runtime Analysis:
+
+The calculation of midpoint and sub-blocks, along with the color assignment are all constant time, so the runtime complexity is O(1).
+
+
+**********************************************************************
+* rotate (1 pt):
+
+Data Structure: N/A
+
+
+Algorithm:
+
+    If the target block has children, we can rotate it. We first use topLeft of topLeftTree and that of topRightTree to calculate the distance to move. Then we call moveXY() function on 4 sub-blocks to move them to the corresponding position. moveXY() function is recursive, so that the children of sub-blocks can also be moved. Note that the children will not be rotated, just move.
+
+
+Runtime Analysis:
+
+This function call moveXY() function, which is a recursive function, and we need to recursively call this function until reach the leaf node, thus the runtime complexity is O(max_depth).
+
+
+**********************************************************************
+* flatten (1 pt):
+
+Data Structure: 2D array, queue
+
+
+Algorithm:
+
+    We first calculate the length of the 2D array(i.e. the num of rows and cols of this 2D array), which is 2^max_depth. Also we use queue to do the BFS.
+
+    For each block, if this block has no children, we iterate through the unit cells it occupies and mark the corresponding index in the 2D array as the block; else, we push its children into the queue. Note that when iterate through the unit cells, the range need to be multiplied by a coefficient(2^max_depth/8), so that we can make sure that the size of unit cell is 1.
+
+
+Runtime Analysis:
+
+This function will iterate through all blocks and change the value of each index of 2D array. The size of this 2D array is (2^max_depth)^2, which is 2^(max_depth+1), thus the overall runtime complexity is O(2^(max_depth+1)).
+
+
+**********************************************************************
+* perimeter_score (0 pt):
+
+Runtime analysis: perimeter_score
+
+
+Algorithm:
+
+    We call flatten() and store the result in a 2D array
+
+    We go through the array and count the number of border cells with the target color.
+
+
+Analysis:
+
+The number of cells in the array is the number of leaf nodes in the QuadTree; since it is a full 4-ary tree, we get the maximum number of leaf nodes when all the levels in the quadtree are full. Then, the number of leaf nodes is roughly equal to (3 * n)/4, with n representing the total number of nodes in the tree. Hence traversing the 2D array runs in O(n).
+
+Since the method also call flatten(), the perimeter_score methos described above runs in Max{O(flatten) ,O(n)}
+
+
+**********************************************************************
