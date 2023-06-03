@@ -1,0 +1,53 @@
+/**********************************************************************
+ *  HW6 - News Aggregator
+ *  ALGORITHM ANALYSIS                                                
+ **********************************************************************/
+
+* parseFeed:
+
+This method iterates through all the links and the words of each link once. So the overall runtime complexity is O(n), where n is the total number of words.
+
+**********************************************************************
+* buildIndex:
+
+The first step is to build the IDF map, for IDF is related to all the documents. In this step, we iterate through all the words once, thus the runtime is O(n).
+
+The second step is to get TF and use TF * IDF to get the final result. In this step, we iterate through all documents, for all words in this documents, we calculate TF and use get() method to get its IDF, then get the final result of this word. To sort the value map by lexicographic order on the key, we use treemap. Since the runtime of get() method is O(1), and we iterate through all words, the total runtime of building the value map is O(n), and use treemap to sort has the runtime of O(nlogn), so the total runtime is O(nlogn).
+
+Based on the analysis above, the total runtime of this method is O(nlogn).
+
+**********************************************************************
+* buildInvertedIndex:
+
+The first step is to use index map to build the unsorted inverted index map. In this step, we iterate all key-value pairs of index map, so the overall runtime is O(n).
+
+The second step is sort each value of the key-value pairs of inverted index map. Since each value's length is relatively small compared to the total number of words, so the runtime can be neglected.
+
+Based on the analysis above, the total runtime of this method is O(n).
+
+**********************************************************************
+* buildHomePage:
+
+The first step is to use inverted index map to build the unsorted homepage list. In this step, we iterate all key-value pairs of inverted index map, so the overall runtime is O(n).
+
+The second step is to sort the homepage list, and the runtime is O(nlogn).
+
+So the overall runtime of this method is O(nlogn).
+
+
+**********************************************************************
+* createAutocompleteFile:
+
+This method iterates the homepage list, add each element's key (term word) to another list, sort this list, and write each word in this list into a file.
+
+For the first step(build the unordered list), the runtime is O(n); for the second step(sort the list), the runtime is O(nlogn); for the third step(write into a file), the runtime is O(n).
+
+Thus the overall runtime of this method is O(nlogn).
+
+**********************************************************************
+* searchArticles:
+
+This method iterates through the inverted index map, find the corresponding word(key), and add all document names(key of the map value) into a list. Since the number of document names is relatively small compared to the number of words, so this can be neglected. Thus the runtime is O(n).
+
+**********************************************************************
+
